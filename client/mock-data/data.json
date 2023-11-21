@@ -1,0 +1,104 @@
+{
+    "auctionList": [
+        {
+            "id": 1,
+            "plate": {
+                "plateNumber": "29A 91003",
+                "city": "New York",
+                "typeOfVehicle": "Car"
+            },
+            "startTime": "2022-01-01T00:00:00.000Z",
+            "status": "registered"
+        },
+        {
+            "id": 2,
+            "plate": {
+                "plateNumber": "45B 56789",
+                "city": "Los Angeles",
+                "typeOfVehicle": "Motorcycle"
+            },
+            "startTime": "2022-01-02T12:34:56.789Z",
+            "status": "not registered"
+        },
+        {
+            "id": 3,
+            "plate": {
+                "plateNumber": "12C 12345",
+                "city": "Chicago",
+                "typeOfVehicle": "Truck"
+            },
+            "startTime": "2022-01-03T09:15:30.123Z",
+            "status": "registered"
+        },
+        {
+            "id": 4,
+            "plate": {
+                "plateNumber": "78D 98765",
+                "city": "Houston",
+                "typeOfVehicle": "Car"
+            },
+            "startTime": "2022-01-04T18:45:00.000Z",
+            "status": "not registered"
+        },
+        {
+            "id": 5,
+            "plate": {
+                "plateNumber": "34E 54321",
+                "city": "Phoenix",
+                "typeOfVehicle": "Motorcycle"
+            },
+            "startTime": "2022-01-05T14:20:10.987Z",
+            "status": "registered"
+        },
+        {
+            "id": 6,
+            "plate": {
+                "plateNumber": "56F 24680",
+                "city": "New York",
+                "typeOfVehicle": "Truck"
+            },
+            "startTime": "2022-01-06T07:30:45.678Z",
+            "status": "not registered"
+        },
+        {
+            "id": 7,
+            "plate": {
+                "plateNumber": "90G 13579",
+                "city": "Los Angeles",
+                "typeOfVehicle": "Car"
+            },
+            "startTime": "2022-01-07T16:00:00.000Z",
+            "status": "registered"
+        },
+        {
+            "id": 8,
+            "plate": {
+                "plateNumber": "23H 80246",
+                "city": "Chicago",
+                "typeOfVehicle": "Motorcycle"
+            },
+            "startTime": "2022-01-08T11:11:11.111Z",
+            "status": "not registered"
+        },
+        {
+            "id": 9,
+            "plate": {
+                "plateNumber": "67I 97531",
+                "city": "Houston",
+                "typeOfVehicle": "Truck"
+            },
+            "startTime": "2022-01-09T20:30:00.000Z",
+            "status": "registered"
+        },
+        {
+            "id": 10,
+            "plate": {
+                "plateNumber": "89J 46802",
+                "city": "Phoenix",
+                "typeOfVehicle": "Car"
+            },
+            "startTime": "2022-01-10T13:45:30.456Z",
+            "status": "not registered"
+        }
+    ]
+}
