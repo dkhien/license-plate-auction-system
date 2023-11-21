@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model auctioneer {
+  id Int @id @default(autoincrement())
+  name String
+  email String?
+  phone String
+  password String
+  auctions auction[]
+}
+
+model customer {
+  id Int @id @default(autoincrement())
+  name String
+  email String?
+  citizenId String
+  phone String
+  password String
+  plate plate[]
+  auction auction[]
+}
+
+model plate {
+  id Int @id @default(autoincrement())
+  plateNumber String
+  city String
+  typeOfVehicle String
+  status String?
+  owner customer? @relation(fields: [ownerId], references: [id])
+  price Int?
+  ownerId Int?
+  auction auction?
+}
+
+model auction {
+  id Int @id @default(autoincrement())
+  date DateTime?
+  plate plate? @relation(fields: [plate_id], references: [id])
+  plate_id Int? @unique
+  auctioneer auctioneer? @relation(fields: [auctioneerId], references: [id])
+  auctioneerId Int?
+  customer customer[]
+}
+
+model admin {
+  id Int @id @default(autoincrement())
+  name String
+  email String?
+  phone String?
+  password String
+}
+
+
+
+
+
+
