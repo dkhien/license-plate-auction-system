@@ -37,7 +37,7 @@ export async function getALlDoneAuctions() {
   const data = await prisma.auction.findMany({
     where: {
       date: {
-        gte: new Date('2022-01-30')
+        gte: new Date()
       }
     },
     select: {
@@ -49,8 +49,12 @@ export async function getALlDoneAuctions() {
           plateNumber: true
 
         }
-      }
+      },
+      date: true
     }
   })
-  return data
+  return data.map(auction => ({
+    ...auction,
+    date: auction.date.getTime() / 1000
+  }));
 }

@@ -15,7 +15,7 @@ auctionRouter.post('/room', (req, res) => {
 })
 
 auctionRouter.get('/result', async (req, res) => {
-  const data = getALlDoneAuctions();
+  const data = await getALlDoneAuctions();
   res.json(data)
 })
 
