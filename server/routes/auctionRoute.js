@@ -12,6 +12,7 @@ auctionRouter.post('/new', (req, res) => {
 
 auctionRouter.post('/room', (req, res) => {
   // TODO: return room data (plate, auctioneer, time)]
+  const {code, id} = req.body
 })
 
 auctionRouter.get('/result', async (req, res) => {
