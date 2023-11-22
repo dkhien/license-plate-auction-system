@@ -19,14 +19,13 @@ export async function getPlatesWithDate() {
       }
     }
   });
-  for (let plate of plateList) {
-    plate.auction.date = plate.auction.date.getTime() / 1000;
-  }
-  return plateList
+  // for (let plate of plateList) {
+  //   plate.auction.date = plate.auction.date.getTime() / 1000;
+  // }
+  return plateList.map(auction => ({
+    ...auction,
+    date: auction.date.getTime() / 1000
+  }))
+  // return plateList
 }
 
-export async function createPlate(plate) {
-  return prisma.plate.create({
-    data: plate
-  })
-}

@@ -9,6 +9,7 @@ import auctioneerRoute from "./routes/auctioneerRoute.js";
 import plateRoute from "./routes/plateRoute.js";
 import auctionRoute from "./routes/auctionRoute.js";
 import customerRoute from "./routes/customerRoute.js";
+import authRoute from "./routes/authRoute.js";
 import { connect, auctionSocket } from "./websocket/auctionSocket.js";
 
 const app = express()
@@ -35,6 +36,7 @@ app.use('/api/auctioneer', auctioneerRoute)
 app.use('/api/plate', plateRoute)
 app.use('/api/auction', auctionRoute)
 app.use('/api/customer', customerRoute)
+app.use('/auth', authRoute)
 
 app.get('/', (req, res) => {
   res.send('Hello World!')

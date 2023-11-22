@@ -12,20 +12,15 @@ datasource db {
 
 model auctioneer {
   id Int @id @default(autoincrement())
-  name String
-  email String?
-  phone String
-  password String
+  account account @relation(fields: [accountId], references: [id])
+  accountId Int @unique
   auctions auction[]
 }
 
 model customer {
   id Int @id @default(autoincrement())
-  name String
-  email String?
-  citizenId String
-  phone String
-  password String
+  account account @relation(fields: [accountId], references: [id])
+  accountId Int @unique
   plate plate[]
   code code[]
 }
@@ -54,20 +49,37 @@ model auction {
 
 model admin {
   id Int @id @default(autoincrement())
-  name String
-  email String?
-  phone String?
-  password String
+  account account @relation(fields: [accountId], references: [id])
+  accountId Int @unique
 }
 
 model code {
-  code Int
+  code String
   auction auction @relation(fields: [auctionId], references: [id])
   auctionId Int
   customer customer @relation(fields: [customerId], references: [id])
   customerId Int
 
   @@unique([auctionId, customerId, code])
+}
+
+model account {
+  id Int @id @default(autoincrement())
+  name String
+  email String?
+  phone String
+  password String
+  citizenId String
+  role role @default(CUSTOMER)
+  auctioneer auctioneer?
+  customer customer?
+  admin admin?
+}
+
+enum role {
+  CUSTOMER
+  AUCTIONEER
+  ADMIN
 }
 
 

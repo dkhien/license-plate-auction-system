@@ -6,15 +6,8 @@ export const getProfileWithPlate = async (id) => {
       id: id
     },
     select: {
-      name: true,
-      plate: {
-        select: {
-          plateNumber: true,
-          typeOfVehicle: true,
-          city: true,
-          price: true,
-          ownerId: id
-        }
+      account: {select: {name: true}},
+      plate: {select: {plateNumber: true, typeOfVehicle: true, city: true, price: true, ownerId: id}
       }
     }
   });

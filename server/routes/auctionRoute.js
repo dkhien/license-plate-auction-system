@@ -1,18 +1,20 @@
 import express from "express";
 
-import {createAuction, getALlDoneAuctions} from "../service/auctionService.js";
+import {createAuction, getALlDoneAuctions, getRoomInfo} from "../service/auctionService.js";
 
 const auctionRouter = express.Router();
 
-auctionRouter.post('/new', (req, res) => {
+auctionRouter.post('/new', async (req, res) => {
   const data = req.body;
-  const auction = createAuction(data)
+  const auction = await createAuction(data)
   res.json(auction)
 })
 
-auctionRouter.post('/room', (req, res) => {
+auctionRouter.post('/room', async (req, res) => {
   // TODO: return room data (plate, auctioneer, time)]
   const {code, id} = req.body
+  const roomInfo = await getRoomInfo(code, id);
+  res.json(roomInfo)
 })
 
 auctionRouter.get('/result', async (req, res) => {

@@ -1,11 +1,12 @@
 import prisma from "./prisma.js";
+
+import {register} from "./accountService.js";
 export async function createAuctioneer(auctioneer) {
-  return prisma.auctioneer.create({
-    data: {
-      name: auctioneer.name,
-      email: auctioneer.email,
-      password: auctioneer.password,
-      phone: auctioneer.phone
-    }
-  });
+  try {
+    const newAuctioneer = await register(auctioneer);
+    newAuctioneer.password = null
+    return newAuctioneer;
+  } catch (e) {
+    console.log(e)
+  }
 }
