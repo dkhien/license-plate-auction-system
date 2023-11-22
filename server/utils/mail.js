@@ -31,12 +31,12 @@ export const sendTestMail = (customerEmail, content) => {
   sendEmail(emailDetails)
 }
 
-export const sendCodeRoomMail = (customerEmail, licensePlate) => {
+export const sendCodeRoomMail = (customerEmail, licensePlate, code) => {
   const emailDetails = {
     from: process.env.EMAIL,
     to: customerEmail,
     subject: `Auction room join code for license plate: ${licensePlate}`,
-    text: 'Please keep this for yourself. The code is 123456 for license plate'
+    text: `Please keep this for yourself. The code is ${code} for license plate`
   }
   sendEmail(emailDetails);
 }

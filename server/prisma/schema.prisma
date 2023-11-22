@@ -27,7 +27,7 @@ model customer {
   phone String
   password String
   plate plate[]
-  auction auction[]
+  code code[]
 }
 
 model plate {
@@ -49,7 +49,7 @@ model auction {
   plate_id Int? @unique
   auctioneer auctioneer? @relation(fields: [auctioneerId], references: [id])
   auctioneerId Int?
-  customer customer[]
+  code code[]
 }
 
 model admin {
@@ -58,6 +58,16 @@ model admin {
   email String?
   phone String?
   password String
+}
+
+model code {
+  code Int
+  auction auction @relation(fields: [auctionId], references: [id])
+  auctionId Int
+  customer customer @relation(fields: [customerId], references: [id])
+  customerId Int
+
+  @@unique([auctionId, customerId, code])
 }
 
 
