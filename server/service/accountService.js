@@ -23,19 +23,13 @@ export async function register (data){
     const id = account.id
     switch (role) {
       case "ADMIN":
-        await prisma.admin.create({ data: {
-            accountId: id,
-          }})
+        await prisma.admin.create({ data: {accountId: id,}})
         break
       case "AUCTIONEER":
-        await prisma.auctioneer.create({ data: {
-            accountId: id,
-          }})
+        await prisma.auctioneer.create({ data: {accountId: id,}})
         break
       default:
-        await prisma.customer.create({ data: {
-            accountId: id,
-          }})
+        await prisma.customer.create({ data: {accountId: id,}})
         break
     }
     return account;

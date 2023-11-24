@@ -11,8 +11,12 @@ authRoute.post('/login', async (req, res) => {
 
 authRoute.post('/register', async (req, res) =>{
   const data = req.body;
-  const account = await register(data)
-  res.json(account)
+  try {
+    const account = await register(data)
+    res.json(account)
+  } catch (e) {
+    console.log(e)
+  }
 })
 
 export default authRoute;
