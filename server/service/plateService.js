@@ -20,13 +20,28 @@ export async function getPlatesWithDate() {
     }
   });
 
-  return plateList.map(auction => ({
-    ...auction,
-    date: auction.date.getTime() / 1000
+  return plateList.map(plate => ({
+    ...plate,
+    date: plate.auction.date.getTime() / 1000
   }))
 }
 
 export async function updatePlate(plate) {
-  
+  try {
+    const updatePlate = await prisma.plate.update({
+      where: {id: plate.id },
+      data: {
+        plateNumber: plate.plateNumber || undefined,
+        typeOfVehicle: plate.typeOfVehicle || undefined,
+        price: plate.price || undefined,
+        owner: {connect: {id: plate.ownerId}} || undefined,
+        status: plate.status || undefined,
+        city: plate.city || undefined
+      }
+    })
+    if (updatePlate) return updatePlate;
+  } catch (e) {
+    console.log(e);
+  }
 }
 

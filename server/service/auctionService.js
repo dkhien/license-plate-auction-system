@@ -47,7 +47,6 @@ export async function createAuction(data) {
   } catch (e) {
     console.log(e);
   }
-
 }
 
 export async function getALlDoneAuctions() {
@@ -66,29 +65,42 @@ export async function getALlDoneAuctions() {
   }));
 }
 
-export async function addCustomerToAuction(plateId, id) {
-  const auction = await prisma.auction.findUnique({
-    where: {
-      plate_id: plateId
-    },
-    select: {
-      plate: { select: {plateNumber: true}}
-    }
-  })
-  const code = auction.plate.plateNumber + Math.floor(100000 + Math.random() * 900000);
-  if (!auction) {
-    throw new Error("No auction found")
+export async function verifyCode(code, id) {
+  try {
+    const auction = await prisma.code.findFirst({
+      where: {
+        code: code,
+        customerId: id
+      },
+      select: {auction: {
+        select: {
+          plate: true,
+          auctioneer: {select: {account: {select: {name: true}}}},
+          date: true
+        }
+      }}
+    })
+    return auction;
+  } catch (e) {
+    console.log(e)
   }
-  return prisma.auction.update({
-    where: {
-      plate_id: plateId
-    },
-    data: {
-      code: {
-        create: {code: code, customerId: id
+
+}
+
+export async function addCustomerToAuction(plateNumber, plateId, id) {
+  try {
+    const code = plateNumber + Math.floor(100000 + Math.random() * 900000);
+    const updateAuction = prisma.auction.update({
+      where: {
+        plate_id: plateId
+      },
+      data: {
+        code: {create: {code: code, customerId: id}
         }
       }
-    }
-  })
-
+    })
+    return code;
+  } catch (e) {
+    console.log(e);
+  }
 }
