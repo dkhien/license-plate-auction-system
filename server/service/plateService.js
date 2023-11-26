@@ -19,14 +19,29 @@ export async function getPlatesWithDate() {
       }
     }
   });
-  for (let plate of plateList) {
-    plate.auction.date = plate.auction.date.getTime() / 1000;
-  }
-  return plateList
+
+  return plateList.map(plate => ({
+    ...plate,
+    date: plate.auction.date.getTime() / 1000
+  }))
 }
 
-export async function createPlate(plate) {
-  return prisma.plate.create({
-    data: plate
-  })
+export async function updatePlate(plate) {
+  try {
+    const updatePlate = await prisma.plate.update({
+      where: {id: plate.id },
+      data: {
+        plateNumber: plate.plateNumber || undefined,
+        typeOfVehicle: plate.typeOfVehicle || undefined,
+        price: plate.price || undefined,
+        owner: {connect: {id: plate.ownerId}} || undefined,
+        status: plate.status || undefined,
+        city: plate.city || undefined
+      }
+    })
+    if (updatePlate) return updatePlate;
+  } catch (e) {
+    console.log(e);
+  }
 }
+
