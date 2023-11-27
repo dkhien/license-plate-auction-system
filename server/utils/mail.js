@@ -36,7 +36,7 @@ export const sendCodeRoomMail = (customerEmail, licensePlate, code) => {
     from: process.env.EMAIL,
     to: customerEmail,
     subject: `Auction room join code for license plate: ${licensePlate}`,
-    text: `Please keep this for yourself. The code is ${code} for license plate`
+    text: `Please keep this for yourself. The code is ${code} for license plate.`
   }
   sendEmail(emailDetails);
 }

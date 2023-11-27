@@ -10,7 +10,7 @@ import plateRoute from "./routes/plateRoute.js";
 import auctionRoute from "./routes/auctionRoute.js";
 import customerRoute from "./routes/customerRoute.js";
 import authRoute from "./routes/authRoute.js";
-import { connect, auctionSocket } from "./websocket/auctionSocket.js";
+import { connect, socketService, createRoom } from "./websocket/socketService.js";
 
 const app = express()
 config()
@@ -27,10 +27,12 @@ app.use(bodyParser.json())
 
 const onConnection = (socket) => {
   connect(socket);
-  auctionSocket(io, socket);
+  socketService(io, socket);
+  createRoom(io, socket);
 }
 
 io.on('connection', onConnection);
+
 
 app.use('/api/auctioneer', auctioneerRoute)
 app.use('/api/plate', plateRoute)

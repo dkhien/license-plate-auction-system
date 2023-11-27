@@ -35,11 +35,11 @@ export async function getRoomInfo(code, id) {
 export async function createAuction(data) {
   // TODO: create auction and related plate
   const {city, date, plateNumber, auctioneer, typeOfVehicle} = data
-  const dateTime = new Date(date * 1000)
+  // const dateTime = new Date(date * 1000)
   try {
     return prisma.auction.create({
       data: {
-        date: dateTime,
+        date: date,
         plate: {create: {city: city, plateNumber: plateNumber, typeOfVehicle: typeOfVehicle}},
         auctioneer: {connect: {id: auctioneer}}
       }
@@ -67,10 +67,11 @@ export async function getALlDoneAuctions() {
 
 export async function verifyCode(code, id) {
   try {
+    const customerId = parseInt(id)
     const auction = await prisma.code.findFirst({
       where: {
         code: code,
-        customerId: id
+        customerId: customerId
       },
       select: {auction: {
         select: {
@@ -78,6 +79,7 @@ export async function verifyCode(code, id) {
         }
       }}
     })
+    if (!auction) return {};
     return auction.auction;
   } catch (e) {
     console.log(e)
@@ -85,10 +87,15 @@ export async function verifyCode(code, id) {
 
 }
 
-export async function addCustomerToAuction(plateNumber, plateId, id) {
+export async function addCustomerToAuction( plateId, id) {
   try {
-    const code = plateNumber + Math.floor(100000 + Math.random() * 900000);
-    const updateAuction = prisma.auction.update({
+    const plate = await  prisma.plate.findFirst({
+      where: {id: plateId},
+      select: {plateNumber: true}
+    })
+    const {plateNumber} = plate
+    const code = `${plateNumber}-${Math.floor(100000 + Math.random() * 900000)}`;
+    const updateAuction = await prisma.auction.update({
       where: {
         plate_id: plateId
       },
@@ -97,7 +104,7 @@ export async function addCustomerToAuction(plateNumber, plateId, id) {
         }
       }
     })
-    return code;
+    return {plateNumber, code};
   } catch (e) {
     console.log(e);
   }
@@ -120,10 +127,23 @@ export async function getAuctionById(id) {
         },
         auctioneer: {select: {account: {select: {name: true}}}},
         date: true
-      }
+      },
+      include: {bid: true}
     })
     return auction;
   } catch (e) {
     console.log(e);
   }
+}
+
+export  function updateAuctionBid(data) {
+  const {price, time, userId: customer, auctionId} = data
+  const bid = prisma.bid.create({
+    data: {
+      price: price,
+      time: time,
+      customerId: customer,
+      auction: {connect : {id : auctionId}}
+    }
+  })
 }

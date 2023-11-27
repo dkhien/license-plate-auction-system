@@ -44,6 +44,7 @@ model auction {
   plate_id Int? @unique
   auctioneer auctioneer? @relation(fields: [auctioneerId], references: [id])
   auctioneerId Int?
+  bid bid[]
   code code[]
 }
 
@@ -74,6 +75,15 @@ model account {
   auctioneer auctioneer?
   customer customer?
   admin admin?
+}
+
+model bid {
+  id Int @id @default(autoincrement())
+  auction auction? @relation(fields: [auctionId], references: [id])
+  auctionId Int?
+  customerId Int?
+  time DateTime?
+  price Int?
 }
 
 enum role {
