@@ -7,8 +7,9 @@ import Profile from './pages/common/Profile';
 import NotFound from './pages/error/NotFound';
 import AddAuction from './pages/admin/AddAuction';
 import AuctionList from './pages/customer/AuctionList';
-import AuctionRoom from './pages/customer/AuctionRoom';
+import AuctionRoom, { AuctionCodeInput } from './pages/customer/AuctionRoom';
 import Test from './pages/test/Test';
+import Signup from './pages/authentication/Signup';
 
 function App() {
   const routes = [
@@ -21,6 +22,11 @@ function App() {
     {
       path: '/logout',
       element: <Logout />,
+      isPrivate: true,
+    },
+    {
+      path: '/signup',
+      element: <Signup />,
       isPrivate: true,
     },
 
@@ -44,6 +50,11 @@ function App() {
     },
     {
       path: '/auction-room',
+      element: <AuctionCodeInput />,
+      isPrivate: true,
+    },
+    {
+      path: '/auction-room/:id',
       element: <AuctionRoom />,
       isPrivate: true,
     },

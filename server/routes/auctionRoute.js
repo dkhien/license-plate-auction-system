@@ -1,6 +1,6 @@
 import express from "express";
 
-import {createAuction, getALlDoneAuctions, getRoomInfo, verifyCode} from "../service/auctionService.js";
+import {createAuction, getALlDoneAuctions, getRoomInfo, verifyCode, getAuctionById} from "../service/auctionService.js";
 
 const auctionRouter = express.Router();
 
@@ -26,6 +26,13 @@ auctionRouter.post('/verify', async(req, res) => {
   const {code, id} = req.body
   const data = await verifyCode(code, id)
   res.json(data)
+})
+
+// route to search for 1 auction by its id (/auction/:id)
+auctionRouter.get('/:id', async (req, res) => {
+  const auctionId = parseInt(req.params.id)
+  const auction = await getAuctionById(auctionId);
+  res.json(auction)
 })
 
 export default auctionRouter;

@@ -11,7 +11,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import vpaLogo from '../../assets/images/vpa-logo.svg';
 
 const pages = ['Trang chủ', 'Danh sách biển số', 'Phòng đấu giá'];
@@ -20,6 +20,7 @@ const settings = ['Profile', 'Logout'];
 const settingRoutes = ['/profile', '/logout'];
 
 function Header() {
+  const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -36,6 +37,11 @@ function Header() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate('/');
   };
 
   return (
@@ -160,7 +166,7 @@ function Header() {
               {settings.map((setting, index) => (
                 <MenuItem
                   key={setting}
-                  onClick={handleCloseUserMenu}
+                  onClick={setting === 'Logout' ? handleLogout : handleCloseUserMenu}
                   component={Link}
                   to={settingRoutes[index]}
                 >

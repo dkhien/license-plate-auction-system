@@ -6,9 +6,9 @@ import { Link } from 'react-router-dom';
 import banner from '../../assets/images/banner.jpg';
 import GradientButton from '../../components/mui-custom/GradientButton';
 import Header from '../../components/layout/Header';
-
 import newsImage from '../../assets/images/news-mock.png';
 import PageTitle from '../../components/layout/PageTitle';
+import Footer from '../../components/layout/Footer';
 
 function Home() {
   return (
@@ -50,9 +50,11 @@ function Home() {
       <Divider sx={{ marginTop: '2rem', marginBottom: '2rem' }} />
       <Container maxWidth="xl">
         <PageTitle>Tin tức</PageTitle>
-        <img src={newsImage} alt="news" />
+        <a href="https://vpa.com.vn/news/7109679422988288" target="_blank" rel="noopener noreferrer">
+          <img src={newsImage} alt="news" />
+        </a>
       </Container>
-      <Box height="100px" width="100%" />
+      <Footer />
     </>
   );
 }

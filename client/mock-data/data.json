@@ -3,32 +3,50 @@
         {
             "id": 1,
             "plate": {
-                "plateNumber": "29A 91003",
-                "city": "New York",
-                "typeOfVehicle": "Car"
+                "plateNumber": "29E2 43477",
+                "city": "Hà Nội",
+                "typeOfVehicle": "Xe máy"
             },
-            "startTime": "2022-01-01T00:00:00.000Z",
-            "status": "registered"
+            "startTime": "2024-12-12T00:00:00.000Z",
+            "status": "registered",
+            "auctioneer": "John Doe",
+            "auctionCode": {
+                "code": "ABC123",
+                "auctionId": 1,
+                "userId": 123
+            }
         },
         {
             "id": 2,
             "plate": {
-                "plateNumber": "45B 56789",
-                "city": "Los Angeles",
-                "typeOfVehicle": "Motorcycle"
+                "plateNumber": "29L1 91003",
+                "city": "Hà Nội",
+                "typeOfVehicle": "Xe máy"
             },
             "startTime": "2022-01-02T12:34:56.789Z",
-            "status": "not registered"
+            "status": "not registered",
+            "auctioneer": "Jane Smith",
+            "auctionCode": {
+                "code": "DEF456",
+                "auctionId": 2,
+                "userId": 456
+            }
         },
         {
             "id": 3,
             "plate": {
-                "plateNumber": "12C 12345",
+                "plateNumber": "29N9 3824",
                 "city": "Chicago",
                 "typeOfVehicle": "Truck"
             },
             "startTime": "2022-01-03T09:15:30.123Z",
-            "status": "registered"
+            "status": "registered",
+            "auctioneer": "Mike Johnson",
+            "auctionCode": {
+                "code": "GHI789",
+                "auctionId": 3,
+                "userId": 789
+            }
         },
         {
             "id": 4,
@@ -38,7 +56,13 @@
                 "typeOfVehicle": "Car"
             },
             "startTime": "2022-01-04T18:45:00.000Z",
-            "status": "not registered"
+            "status": "not registered",
+            "auctioneer": "Sarah Williams",
+            "auctionCode": {
+                "code": "JKL012",
+                "auctionId": 4,
+                "userId": 123
+            }
         },
         {
             "id": 5,
@@ -48,7 +72,13 @@
                 "typeOfVehicle": "Motorcycle"
             },
             "startTime": "2022-01-05T14:20:10.987Z",
-            "status": "registered"
+            "status": "registered",
+            "auctioneer": "David Brown",
+            "auctionCode": {
+                "code": "MNO345",
+                "auctionId": 5,
+                "userId": 345
+            }
         },
         {
             "id": 6,
@@ -58,7 +88,13 @@
                 "typeOfVehicle": "Truck"
             },
             "startTime": "2022-01-06T07:30:45.678Z",
-            "status": "not registered"
+            "status": "not registered",
+            "auctioneer": "Emily Davis",
+            "auctionCode": {
+                "code": "PQR678",
+                "auctionId": 6,
+                "userId": 678
+            }
         },
         {
             "id": 7,
@@ -68,7 +104,13 @@
                 "typeOfVehicle": "Car"
             },
             "startTime": "2022-01-07T16:00:00.000Z",
-            "status": "registered"
+            "status": "registered",
+            "auctioneer": "Michael Wilson",
+            "auctionCode": {
+                "code": "STU901",
+                "auctionId": 7,
+                "userId": 901
+            }
         },
         {
             "id": 8,
@@ -78,7 +120,13 @@
                 "typeOfVehicle": "Motorcycle"
             },
             "startTime": "2022-01-08T11:11:11.111Z",
-            "status": "not registered"
+            "status": "not registered",
+            "auctioneer": "Olivia Taylor",
+            "auctionCode": {
+                "code": "VWX234",
+                "auctionId": 8,
+                "userId": 234
+            }
         },
         {
             "id": 9,
@@ -88,7 +136,13 @@
                 "typeOfVehicle": "Truck"
             },
             "startTime": "2022-01-09T20:30:00.000Z",
-            "status": "registered"
+            "status": "registered",
+            "auctioneer": "Daniel Anderson",
+            "auctionCode": {
+                "code": "YZA567",
+                "auctionId": 9,
+                "userId": 567
+            }
         },
         {
             "id": 10,
@@ -98,7 +152,25 @@
                 "typeOfVehicle": "Car"
             },
             "startTime": "2022-01-10T13:45:30.456Z",
-            "status": "not registered"
+            "status": "not registered",
+            "auctioneer": "Sophia Martinez",
+            "auctionCode": {
+                "code": "BCD890",
+                "auctionId": 10,
+                "userId": 890
+            }
         }
+    ],
+    "auctioneerList": [
+        "John Doe",
+        "Jane Smith",
+        "Mike Johnson",
+        "Sarah Williams",
+        "David Brown",
+        "Emily Davis",
+        "Michael Wilson",
+        "Olivia Taylor",
+        "Daniel Anderson",
+        "Sophia Martinez"
     ]
 }

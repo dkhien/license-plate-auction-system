@@ -1,14 +1,14 @@
 import React from 'react';
-import LicensePlateCard from '../../components/LicensePlateCard';
+import AuctionWin from '../customer/AuctionWin';
 
 function Test() {
-  const plate = {
-    plateNumber: 'ABC 123',
-    city: 'Bucharest',
-    typeOfVehicle: 'car',
-  };
+  // const plate = {
+  //   plateNumber: 'ABC 123',
+  //   city: 'Bucharest',
+  //   typeOfVehicle: 'car',
+  // };
   return (
-    <LicensePlateCard plate={plate} />
+    <AuctionWin username="Phương Anh" />
   );
 }
 

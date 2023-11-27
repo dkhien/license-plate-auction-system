@@ -4,7 +4,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 function Spinner() {
   return (
     <div style={{
-      display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh',
+      display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh',
     }}
     >
       <CircularProgress variant="indeterminate" disableShrink />

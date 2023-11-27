@@ -9,8 +9,7 @@ const fetcher = async (url) => {
 };
 
 const useFetch = (path) => {
-  const serverUrl = process.env.REACT_APP_SERVER_URL;
-  const { data, error } = useSWR(`${serverUrl}${path}`, fetcher);
+  const { data, error } = useSWR(`${path}`, fetcher);
 
   const isLoading = !data && !error;
 

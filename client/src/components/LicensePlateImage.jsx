@@ -14,6 +14,7 @@ function LicensePlateImage({ plateNumber }) {
       justifyContent="center"
       alignItems="center"
       flexDirection="column"
+      width="100%"
       sx={
         {
           aspectRatio: '2/1 !important',

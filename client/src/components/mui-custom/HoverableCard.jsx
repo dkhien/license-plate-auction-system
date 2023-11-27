@@ -2,6 +2,7 @@ import React from 'react';
 import { Card } from '@mui/material';
 
 function HoverableCard({ children, ...props }) {
+  const { sx, ...rest } = props;
   return (
     <Card
       variant="outlined"
@@ -12,10 +13,11 @@ function HoverableCard({ children, ...props }) {
           border: '1px solid #00cda8',
           backdropFilter: 'blur(10px)',
           transition: 'all 0.2s ease-in-out',
-          ...props.sx,
+
         },
+        ...sx,
       }}
-      {...props}
+      {...rest}
     >
       {children}
     </Card>
