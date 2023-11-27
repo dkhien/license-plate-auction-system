@@ -74,13 +74,11 @@ export async function verifyCode(code, id) {
       },
       select: {auction: {
         select: {
-          plate: true,
-          auctioneer: {select: {account: {select: {name: true}}}},
-          date: true
+          id: true,
         }
       }}
     })
-    return auction;
+    return auction.auction;
   } catch (e) {
     console.log(e)
   }
@@ -100,6 +98,31 @@ export async function addCustomerToAuction(plateNumber, plateId, id) {
       }
     })
     return code;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function getAuctionById(id) {
+  try {
+    const auction = await prisma.auction.findUnique({
+      where: {
+        id: id
+      },
+      select: {
+        plate: {
+          select: {
+            plateNumber: true,
+            typeOfVehicle: true,
+            city: true,
+            price: true,
+          }
+        },
+        auctioneer: {select: {account: {select: {name: true}}}},
+        date: true
+      }
+    })
+    return auction;
   } catch (e) {
     console.log(e);
   }
