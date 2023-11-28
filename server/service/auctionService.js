@@ -114,7 +114,7 @@ export async function getAuctionById(id) {
   try {
     const auction = await prisma.auction.findUnique({
       where: {
-        id: id
+        id: id,
       },
       select: {
         plate: {
@@ -126,9 +126,9 @@ export async function getAuctionById(id) {
           }
         },
         auctioneer: {select: {account: {select: {name: true}}}},
+        bid: true,
         date: true
-      },
-      include: {bid: true}
+      }
     })
     return auction;
   } catch (e) {
@@ -136,14 +136,22 @@ export async function getAuctionById(id) {
   }
 }
 
-export  function updateAuctionBid(data) {
-  const {price, time, userId: customer, auctionId} = data
-  const bid = prisma.bid.create({
-    data: {
-      price: price,
-      time: time,
-      customerId: customer,
-      auction: {connect : {id : auctionId}}
-    }
-  })
+export async function updateAuctionBid(data) {
+  try {
+    let {price, time, userId: customer, auctionId} = data;
+    auctionId = parseInt(auctionId)
+    price = parseInt(price)
+    customer = parseInt(customer)
+    time = new Date(time)
+    const bid =  await prisma.bid.create({
+      data: {
+        price: price,
+        time: time,
+        customerId: customer,
+        auction: {connect: {id: auctionId}}
+      }
+    })
+  } catch (e) {
+    console.log(e)
+  }
 }
