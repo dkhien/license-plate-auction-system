@@ -9,7 +9,7 @@ export const connect = (socket) => {
 
 export const socketService = (io, socket) => {
   const bid = (payload) => {
-    const {auctionId, username, userId, time, price} = JSON.parse(payload)
+    const {auctionId, username, userId, time, price} = (payload)
     updateAuctionBid({price, time, userId, auctionId})
     console.log(auctionId)
     io.to(auctionId).emit('auction:bid', payload)
@@ -20,7 +20,7 @@ export const socketService = (io, socket) => {
 export const createRoom = (io, socket) => {
   socket.on('auction:join', (room) => {
     socket.join(room)
-    // console.log(room)
+    console.log(`a user joined room ${room} from ${socket.handshake.address}`)
   })
 }
 
