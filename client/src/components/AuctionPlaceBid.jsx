@@ -49,7 +49,7 @@ function AuctionPlaceBid({ placeBid }) {
           sx={{ marginBottom: 2 }}
         />
         <Typography variant="h6" sx={{ marginBottom: 2 }}>
-          {stepSize * numOfSteps}
+          {currentPrice + stepSize * numOfSteps}
         </Typography>
         <Button
           variant="contained"

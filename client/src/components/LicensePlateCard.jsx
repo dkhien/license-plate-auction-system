@@ -10,7 +10,7 @@ import LicensePlateImage from './LicensePlateImage';
 import HoverableCard from './mui-custom/HoverableCard';
 import CountdownTimer from './CountdownTimer';
 
-function LicensePlateCard({ plate, handleRegister }) {
+function LicensePlateCard({ plate, handleRegister, isRegistered }) {
   const {
     plateNumber, city, typeOfVehicle,
   } = plate;
@@ -39,13 +39,19 @@ function LicensePlateCard({ plate, handleRegister }) {
         <Typography variant="body1" sx={{ marginTop: '0.5rem' }}>
           Thời gian chờ đấu giá
           {' '}
-          <CountdownTimer startTime={currentTime.toISOString()} duration={duration} />
+
         </Typography>
+        <CountdownTimer startTime={currentTime.toISOString()} duration={duration} />
       </CardContent>
 
       <CardActions>
-        <Button size="large" variant="contained" onClick={() => handleRegister(plate)}>
-          Đăng ký
+        <Button
+          size="large"
+          variant="contained"
+          onClick={() => handleRegister(plate)}
+          disabled={isRegistered}
+        >
+          {isRegistered ? 'Đã đăng ký' : 'Đăng ký'}
         </Button>
       </CardActions>
     </HoverableCard>

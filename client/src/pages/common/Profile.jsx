@@ -1,15 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Avatar, Box, Button, List, ListItemAvatar, ListItemButton,
   ListItemText, Typography, Card, ListItem, Pagination, useTheme,
 } from '@mui/material';
 import EmojiPeopleOutlinedIcon from '@mui/icons-material/EmojiPeopleOutlined'; // Changed icon
 import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
-// import Footer from '../../components/layout/Footer';
-// import Header from '../../components/layout/Header';
-// import Layout from '../../components/layout/Layout';
+import Spinner from '../../components/Spinner';
+import Layout from '../../components/layout/Layout';
 
 function Profile() {
+  const serverUrl = process.env.REACT_APP_SERVER_URL;
+  const userProfileEndpoint = `${serverUrl}/api/customer/profile`;
+  const userId = localStorage.getItem('userId');
+
+  const [userInfo, setUserInfo] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      setLoading(true);
+      try {
+        const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(
+            {
+              id: userId,
+            },
+          ),
+        };
+        const res = await fetch(userProfileEndpoint, requestOptions);
+        if (res) {
+          const data = await res.json();
+          console.log(data);
+          setUserInfo(data);
+        }
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getUserInfo();
+  }, []);
+
   const [selectedTab, setSelectedTab] = useState('userInfo');
 
   const handleTabChange = (event, newValue) => {
@@ -17,20 +52,31 @@ function Profile() {
   };
 
   return (
-    <div style={{ display: 'flex', overflow: 'hidden' }}>
-      <Sidebar selectedTab={selectedTab} handleTabChange={handleTabChange} />
-      <MainContent selectedTab={selectedTab} />
-    </div>
+    <Layout>
+      {loading && <Spinner />}
+      {error && <Typography>{error}</Typography>}
+      {userInfo && (
+
+      <div style={{ display: 'flex', overflow: 'hidden' }}>
+        <Sidebar
+          selectedTab={selectedTab}
+          handleTabChange={handleTabChange}
+          userInfo={userInfo.account}
+        />
+        <MainContent selectedTab={selectedTab} userInfo={userInfo} />
+      </div>
+      )}
+    </Layout>
   );
 }
 
-function Sidebar({ selectedTab, handleTabChange }) {
+function Sidebar({ selectedTab, handleTabChange, userInfo }) {
   return (
     <div style={{ padding: '16px', minWidth: 250 }}>
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Avatar alt="User Avatar" style={{ width: '80px', height: '80px', marginBottom: '16px' }} />
         <Typography variant="h5" sx={{ marginBottom: '16px' }}>
-          username
+          {userInfo.name}
         </Typography>
       </Box>
 
@@ -57,11 +103,13 @@ function Sidebar({ selectedTab, handleTabChange }) {
   );
 }
 
-function MainContent({ selectedTab }) {
+function MainContent({ selectedTab, userInfo }) {
+  const userProfile = userInfo.account;
   return (
+    // const biddingHistory = userInfo.biddingHistory;
     <Box sx={{ flexGrow: 1, padding: '24px' }}>
       {selectedTab === 'userInfo' && (
-        <UserInfo />
+        <UserInfo userProfile={userProfile} />
       )}
       {selectedTab === 'biddingHistory' && (
         <BiddingHistory />
@@ -70,25 +118,18 @@ function MainContent({ selectedTab }) {
   );
 }
 
-function UserInfo() {
-  // mock user data (username, name, email, phone number, address, date of birth, citizen ID)
+function UserInfo({ userProfile }) {
   const userInfo = {
-    username: 'username',
-    name: 'name',
-    email: 'email',
-    phoneNumber: 'phoneNumber',
-    address: 'address',
-    dateOfBirth: 'dateOfBirth',
-    citizenID: 'citizenID',
+    name: userProfile.name,
+    email: userProfile.email,
+    phoneNumber: userProfile.phone,
+    citizenID: userProfile.citizenId,
   };
 
   return (
-    <Card>
+    <Card sx={{ padding: '2rem' }}>
       <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: '1rem' }}>
         Hồ sơ người dùng
-      </Typography>
-      <Typography variant="h6">
-        {userInfo.username}
       </Typography>
       <Typography variant="body1">
         Tên:
@@ -104,11 +145,6 @@ function UserInfo() {
         Phone Number:
         {' '}
         {userInfo.phoneNumber}
-      </Typography>
-      <Typography variant="body1">
-        Date of Birth:
-        {' '}
-        {userInfo.dateOfBirth}
       </Typography>
       <Typography variant="body1">
         Citizen ID:

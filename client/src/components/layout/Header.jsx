@@ -16,8 +16,8 @@ import vpaLogo from '../../assets/images/vpa-logo.svg';
 
 const pages = ['Trang chủ', 'Danh sách biển số', 'Phòng đấu giá'];
 const routes = ['/', '/auction-list', '/auction-room'];
-const settings = ['Profile', 'Logout'];
-const settingRoutes = ['/profile', '/logout'];
+// const settings = ['Profile', 'Logout'];
+// const settingRoutes = ['/profile', '/logout'];
 
 function Header() {
   const navigate = useNavigate();
@@ -43,6 +43,8 @@ function Header() {
     localStorage.clear();
     navigate('/');
   };
+
+  const userLoggedIn = localStorage.getItem('userId') !== null;
 
   return (
     <AppBar position="static" sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
@@ -139,41 +141,56 @@ function Header() {
 
           {/* Avatar */}
           <Box sx={{ flexGrow: 0 }}>
-            {/* Avatar Button */}
-            <Tooltip title="username">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="User Avatar" />
-              </IconButton>
-            </Tooltip>
+            {userLoggedIn ? (
+              <>
+                {/* Avatar Button */}
+                <Tooltip title={localStorage.getItem('userName')}>
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar alt="User Avatar" />
+                  </IconButton>
+                </Tooltip>
 
-            {/* Avatar Menu */}
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting, index) => (
-                <MenuItem
-                  key={setting}
-                  onClick={setting === 'Logout' ? handleLogout : handleCloseUserMenu}
-                  component={Link}
-                  to={settingRoutes[index]}
+                {/* Avatar Menu */}
+                <Menu
+                  sx={{ mt: '45px' }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
                 >
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+                  <MenuItem
+                    key={0}
+                    onClick={handleCloseUserMenu}
+                    component={Link}
+                    to="/profile"
+                  >
+                    <Typography textAlign="center">Hồ sơ</Typography>
+                  </MenuItem>
+                  <MenuItem
+                    key={1}
+                    onClick={handleLogout}
+                  >
+                    <Typography textAlign="center">Đăng xuất</Typography>
+                  </MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <Button
+                onClick={() => navigate('/login')}
+                sx={{ my: 2, color: 'inherit', display: 'block' }}
+              >
+                Đăng nhập
+              </Button>
+            )}
           </Box>
         </Toolbar>
       </Container>

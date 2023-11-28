@@ -1,4 +1,4 @@
-import { React, useState } from 'react';
+import { React, useState, useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Button, TextField, Typography, Grid, Card, Box,
@@ -10,9 +10,16 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  useEffect(() => {
+    const userEmail = localStorage.getItem('userEmail');
+    if (userEmail) {
+      navigate('/');
+    }
+  }, []);
+
   const handleLogin = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/login`, {
+      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -23,7 +30,7 @@ function Login() {
       // TODO
       if (response) {
         const userInfo = await response.json();
-
+        console.log(userInfo);
         // Save to local storage
         localStorage.setItem('userEmail', email);
         localStorage.setItem('userName', userInfo.name);

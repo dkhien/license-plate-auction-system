@@ -10,6 +10,7 @@ import AuctionList from './pages/customer/AuctionList';
 import AuctionRoom, { AuctionCodeInput } from './pages/customer/AuctionRoom';
 import Test from './pages/test/Test';
 import Signup from './pages/authentication/Signup';
+import AuthWrapper from './pages/authentication/AuthWrapper';
 
 function App() {
   const routes = [
@@ -27,7 +28,7 @@ function App() {
     {
       path: '/signup',
       element: <Signup />,
-      isPrivate: true,
+      isPrivate: false,
     },
 
     // COMMON ROUTES
@@ -41,7 +42,7 @@ function App() {
     {
       path: '/',
       element: <Home />,
-      isPrivate: true,
+      isPrivate: false,
     },
     {
       path: '/auction-list',
@@ -86,13 +87,29 @@ function App() {
     <BrowserRouter>
 
       <Routes>
-        {routes.map((route) => (
-          <Route
-            key={route.path}
-            path={route.path}
-            element={route.element}
-          />
-        ))}
+        {routes.map((route) => {
+          if (route.isPrivate) {
+            return (
+              <Route
+                key={route.path}
+                element={<AuthWrapper />}
+              >
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={route.element}
+                />
+              </Route>
+            );
+          }
+          return (
+            <Route
+              key={route.path}
+              path={route.path}
+              element={route.element}
+            />
+          );
+        })}
       </Routes>
 
     </BrowserRouter>
