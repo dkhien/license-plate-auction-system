@@ -1,6 +1,13 @@
 import express from "express";
 
-import {createAuction, getALlDoneAuctions, getAuctionById, getRoomInfo, verifyCode} from "../service/auctionService.js";
+import {
+  createAuction,
+  getALlDoneAuctions,
+  getAuctionById,
+  getRoomInfo,
+  updateWinner,
+  verifyCode
+} from "../service/auctionService.js";
 
 const auctionRouter = express.Router();
 
@@ -49,6 +56,15 @@ auctionRouter.get('/:id', async (req, res) => {
   try {
     const auctionId = parseInt(req.params.id)
     const auction = await getAuctionById(auctionId);
+    res.json(auction)
+  } catch (e) {
+    res.status(400).send(e)
+  }
+})
+
+auctionRouter.post('/update-winner', async (req, res) => {
+  try {
+    const auction = updateWinner(req.body)
     res.json(auction)
   } catch (e) {
     res.status(400).send(e)

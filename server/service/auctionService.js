@@ -33,7 +33,6 @@ export async function getRoomInfo(code, id) {
 }
 
 export async function createAuction(data) {
-  // TODO: create auction and related plate
   const {city, date, plateNumber, auctioneer, typeOfVehicle} = data
   // const dateTime = new Date(date * 1000)
   try {
@@ -89,6 +88,12 @@ export async function verifyCode(code, id) {
 
 export async function addCustomerToAuction( plateId, id) {
   try {
+    const existedCode = await prisma.code.findFirst({
+      where: {
+        customerId: id,
+      }
+    })
+
     const plate = await  prisma.plate.findFirst({
       where: {id: plateId},
       select: {plateNumber: true}
@@ -154,4 +159,26 @@ export async function updateAuctionBid(data) {
   } catch (e) {
     console.log(e)
   }
+}
+
+export async function updateWinner(data)   {
+  let {customerId, price, auctionId} = data;
+  const auction = await prisma.auction.update({
+    where: {id: auctionId},
+    data: { plate: {
+        update: {
+          data: {price: price, ownerId: customerId}
+        }
+      }}
+  })
+  return auction
+}
+
+export async function getCurrentPrice(id) {
+  const data = await prisma.bid.findFirst({
+    where: {auctionId: id},
+    select: {price: true},
+    orderBy: {price: 'desc'}
+  })
+  return !data.price ? 40000 : data.price;
 }
