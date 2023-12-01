@@ -41,7 +41,7 @@ export async function updatePlate(plate) {
     })
     if (updatePlate) return updatePlate;
   } catch (e) {
-    console.log(e);
+    throw e
   }
 }
 

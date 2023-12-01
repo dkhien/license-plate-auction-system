@@ -16,6 +16,5 @@ export const getProfileWithPlate = async (id) => {
   //   profile : account,
   //   auction: code.auction
   // }
-
   return profile;
 }
