@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Avatar, Box, Button, List, ListItemAvatar, ListItemButton,
+  Avatar, Box, List, ListItemAvatar, ListItemButton,
   ListItemText, Typography, Card, ListItem, Pagination, useTheme,
 } from '@mui/material';
 import EmojiPeopleOutlinedIcon from '@mui/icons-material/EmojiPeopleOutlined'; // Changed icon
@@ -96,9 +96,9 @@ function Sidebar({ selectedTab, handleTabChange, userInfo }) {
           <ListItemText primary="Lịch sử đấu giá" />
         </ListItemButton>
       </List>
-      <Button variant="contained" color="primary" fullWidth sx={{ marginTop: '16px' }}>
+      {/* <Button variant="contained" color="primary" fullWidth sx={{ marginTop: '16px' }}>
         Cập nhật hồ sơ
-      </Button>
+      </Button> */}
     </div>
   );
 }

@@ -19,7 +19,7 @@ function LicensePlateCard({ plate, handleRegister, isRegistered }) {
 
   const currentTime = new Date();
   const duration = new Date(startTime) - currentTime;
-
+  const cityName = city.replace(/(Tỉnh|Thành phố)\s+/i, '');
   return (
     <HoverableCard
       sx={{
@@ -28,12 +28,14 @@ function LicensePlateCard({ plate, handleRegister, isRegistered }) {
         textAlign: 'center',
         justifyContent: 'center',
         alignItems: 'center',
+        height: '100%',
       }}
     >
       <LicensePlateImage plateNumber={plateNumber} />
       <CardContent>
         <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
-          <Typography variant="body1">{city}</Typography>
+
+          <Typography variant="body1">{cityName}</Typography>
           <Typography variant="body1">{typeOfVehicle}</Typography>
         </Box>
         <Typography variant="body1" sx={{ marginTop: '0.5rem' }}>

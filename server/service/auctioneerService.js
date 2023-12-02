@@ -10,3 +10,14 @@ export async function createAuctioneer(auctioneer) {
     console.log(e)
   }
 }
+
+export async function getAllAuctioneers() {
+  try {
+    return await prisma.account.findMany({
+      where: {role: "AUCTIONEER"},
+      select: {id: true, name: true, email: true}
+    })
+  } catch (e) {
+    console.log(e)
+  }
+}

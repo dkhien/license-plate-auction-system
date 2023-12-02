@@ -1,6 +1,6 @@
 import express from "express";
 
-import {createAuctioneer} from "../service/auctioneerService.js";
+import {getAllAuctioneers, createAuctioneer} from "../service/auctioneerService.js";
 
 const auctioneerRouter = express.Router()
 auctioneerRouter.post('/new', async (req, res) => {
@@ -14,6 +14,15 @@ auctioneerRouter.post('/new', async (req, res) => {
   }
   const newAuctioneer =  await createAuctioneer(auctioneer);
   res.json(newAuctioneer)
+})
+
+auctioneerRouter.get('/all', async (req, res) => {
+  try {
+    const auctioneerList = await getAllAuctioneers();
+    res.json(auctioneerList);
+  } catch (e) {
+    res.status(400).send(e)
+  }
 })
 
 auctioneerRouter.get('/',(req, res) => {

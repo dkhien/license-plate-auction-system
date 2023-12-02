@@ -29,18 +29,18 @@ function Login() {
 
       // TODO
       if (response) {
-        const userInfo = await response.json();
-        console.log(userInfo);
-        // Save to local storage
-        localStorage.setItem('userEmail', email);
-        localStorage.setItem('userName', userInfo.name);
-        localStorage.setItem('userId', userInfo.id);
-        localStorage.setItem('userRole', userInfo.role);
+        const data = await response.json();
+        localStorage.setItem('userId', data.id);
+        localStorage.setItem('userEmail', data.email);
+        localStorage.setItem('userName', data.name);
+        const userRole = data.role;
+        localStorage.setItem('userRole', userRole);
 
-        // Redirect to homepage
-        if (userInfo.role === 'ADMIN') {
+        if (userRole === 'ADMIN') {
+          localStorage.setItem('adminId', data.adminId);
           navigate('/admin');
-        } else if (userInfo.role === 'CUSTOMER') {
+        } else if (userRole === 'CUSTOMER') {
+          localStorage.setItem('customerId', data.customerId);
           navigate('/');
         }
       } else {

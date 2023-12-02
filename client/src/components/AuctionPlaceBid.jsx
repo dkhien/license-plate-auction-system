@@ -3,10 +3,9 @@ import {
   Card, CardContent, Typography, TextField, Button, Box,
 } from '@mui/material';
 
-function AuctionPlaceBid({ placeBid }) {
+function AuctionPlaceBid({ placeBid, currentPrice }) {
   const [numOfSteps, setNumOfSteps] = useState(0);
-  const currentPrice = 100; // Replace with actual current price
-  const stepSize = 10; // Replace with actual step size
+  const stepSize = 5000; // Replace with actual step size
 
   const handleNumOfStepsChange = (event) => {
     const { value } = event.target;
@@ -14,8 +13,10 @@ function AuctionPlaceBid({ placeBid }) {
   };
 
   const handleSubmit = () => {
-    const resultPrice = stepSize * numOfSteps;
-    placeBid(resultPrice);
+    const resultPrice = currentPrice + stepSize * numOfSteps;
+    if (resultPrice > currentPrice) {
+      placeBid(resultPrice);
+    }
     setNumOfSteps(0);
     // Place bid logic here
     console.log(`Placing bid for ${numOfSteps} steps with a result price of ${resultPrice}`);

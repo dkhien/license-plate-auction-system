@@ -42,8 +42,17 @@ function Signup() {
           const data = await res.json();
           localStorage.setItem('userId', data.id);
           localStorage.setItem('userEmail', data.email);
-          navigate('/');
-          console.log(data);
+          localStorage.setItem('userName', data.name);
+          const userRole = data.role;
+          localStorage.setItem('userRole', userRole);
+
+          if (userRole === 'ADMIN') {
+            localStorage.setItem('adminId', data.adminId);
+            navigate('/admin');
+          } else if (userRole === 'CUSTOMER') {
+            localStorage.setItem('customerId', data.customerId);
+            navigate('/');
+          }
         }
       } catch (err) {
         setErrorRegister(err);

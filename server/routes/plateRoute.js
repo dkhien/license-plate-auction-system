@@ -17,12 +17,15 @@ plateRoute.get('/list', async (req, res) => {
 
 plateRoute.post('/register', async (req, res) => {
   try {
-    const {email, plateId, id: customerId} = req.body;
+    let {email, plateId, id: customerId} = req.body;
+    plateId = parseInt(plateId);
+    customerId = parseInt(customerId);
     const {code, plateNumber} = await addCustomerToAuction(plateId, customerId);
     sendCodeRoomMail(email, plateNumber, code);
+    console.log(plateNumber, code)
     res.status(200).send('Registered successfully')
   } catch (e) {
-    res.status(400).send('Registered unsuccessfully')
+    res.status(400).send('Registered unsuccessfully', e)
   }
 
 })

@@ -1,42 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   Card, List, ListItem, ListItemText, Pagination, useTheme, Typography,
 } from '@mui/material';
 
-function AuctionBidList({ socket }) {
+function AuctionBidList({
+  bids,
+}) {
   const theme = useTheme();
-
-  // mock bid data
-  const [bids, setBids] = useState([
-    {
-      id: 1, price: 100, time: '2022-01-01 10:00:00', bidder: 'John',
-    },
-    {
-      id: 2, price: 150, time: '2022-01-01 10:05:00', bidder: 'Alice',
-    },
-    {
-      id: 3, price: 200, time: '2022-01-01 10:10:00', bidder: 'Bob',
-    },
-  ]);
-
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on('auction:bid', (bid) => {
-      setBids((prev) => [bid, ...prev]); // Add new bid to the beginning of the array
-      console.log('Bid placed: ', bid);
-    });
-
-    socket.on('disconnect', () => {
-      console.log('user disconnected');
-    });
-
-    // eslint-disable-next-line consistent-return
-    return () => {
-      socket.off('auction:bid');
-      socket.off('disconnect');
-    };
-  }, [socket]);
 
   // Pagination
   const [page, setPage] = React.useState(1);
@@ -69,15 +39,19 @@ function AuctionBidList({ socket }) {
               }}
             >
               <ListItemText primary={item.price} secondary={`${item.time}`} />
-              <ListItemText primary={item.bidder} sx={{ textAlign: 'right' }} />
+              <ListItemText primary={item.customerId} sx={{ textAlign: 'right' }} />
             </ListItem>
           ))}
+
+        {bids.length > 0 && (
+        <Pagination
+          count={Math.ceil(bids.length / paginationCount)}
+          page={page}
+          onChange={handleChangePage}
+        />
+        )}
       </List>
-      <Pagination
-        count={Math.ceil(bids.length / paginationCount)}
-        page={page}
-        onChange={handleChangePage}
-      />
+
     </Card>
   );
 }
