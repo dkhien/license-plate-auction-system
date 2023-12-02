@@ -1,20 +1,19 @@
 import prisma from "./prisma.js";
 
 export const getProfileWithPlate = async (id) => {
-  const profile = await prisma.customer.findUnique({
+  const profile = await prisma.customer.findFirst({
     where: {
-      accountId: id
+      id: id
     },
     select: {
       account: true,
-      // plate: {select: {plateNumber: true, typeOfVehicle: true, city: true, price: true, ownerId: id},},
+      id: true,
       code: {select: {auction: {select: {plate: true, date: true}}}}
     }
   });
-  // const {code, plate, account} = profile;
-  // const result = {
-  //   profile : account,
-  //   auction: code.auction
-  // }
+
+  for (let item of profile.code) {
+    item.auction.win = item.auction.plate.ownerId === id;
+  }
   return profile;
 }
