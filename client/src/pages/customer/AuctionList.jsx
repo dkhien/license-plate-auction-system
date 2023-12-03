@@ -29,7 +29,7 @@ function AuctionList() {
   const [selectedPlate, setSelectedPlate] = useState(null);
   const [registeredPlates, setRegisteredPlates] = useState(null);
 
-  const userId = localStorage.getItem('userId');
+  const userId = localStorage.getItem('customerId');
   const [registeredPlatesLoading, setregisteredPlatesLoading] = useState(false);
   const [registeredPlatesError, setRegisteredPlatesError] = useState(null);
 

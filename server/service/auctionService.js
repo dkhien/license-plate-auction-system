@@ -103,7 +103,7 @@ export async function addCustomerToAuction( plateId, id) {
     })
     const {plateNumber} = plate
     const code = `${plateNumber}-${Math.floor(100000 + Math.random() * 900000)}`;
-    const updateAuction = await prisma.auction.upsert({
+    const updateAuction = await prisma.auction.update({
       where: {
         plate_id: plateId
       },

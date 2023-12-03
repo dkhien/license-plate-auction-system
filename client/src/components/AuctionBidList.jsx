@@ -38,8 +38,11 @@ function AuctionBidList({
                 paddingRight: '2rem',
               }}
             >
-              <ListItemText primary={item.price} secondary={`${item.time}`} />
-              <ListItemText primary={item.customerId} sx={{ textAlign: 'right' }} />
+              <ListItemText
+                primary={item.price}
+                secondary={new Date(item.time).toLocaleTimeString()}
+              />
+              <ListItemText primary={item.username} sx={{ textAlign: 'right' }} />
             </ListItem>
           ))}
 

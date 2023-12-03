@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  TextField, Button, Grid, Card,
+  TextField, Button, Grid, Card, Box,
 } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -79,45 +79,46 @@ function AddAuction() {
 
   return (
     <Layout>
-      <PageTitle>Tạo đấu giá mới</PageTitle>
-      <Grid container spacing={2}>
+      <PageTitle>Tạo cuộc đấu giá mới</PageTitle>
+      <Card sx={{
+        padding: '2rem', display: 'flex', justifyContent: 'space-between',
+      }}
+      >
+        <Box sx={{ flex: '3', marginRight: '5%' }}>
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  type="text"
+                  name="platePart1"
+                  label="Biển số (phần 1)"
+                  inputProps={{ maxLength: 4 }}
+                  value={plateNumberPart1}
+                  onChange={(e) => {
+                    setPlateNumberPart1(e.target.value);
+                  }}
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  type="text"
+                  name="platePart2"
+                  label="Biển số (phần 2)"
+                  inputProps={{ maxLength: 5 }}
+                  value={plateNumberPart2}
+                  onChange={(e) => {
+                    setPlateNumberPart2(e.target.value);
+                  }}
+                  required
+                  fullWidth
+                />
+              </Grid>
+              {isLoadingProvinceList && <Spinner />}
+              {errorProvinceList && <div>{errorProvinceList}</div>}
 
-        <Grid item xs={12} md={6}>
-          <Card sx={{ padding: '2rem' }}>
-            <form onSubmit={handleSubmit}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    type="text"
-                    name="platePart1"
-                    label="Biển số (phần 1)"
-                    inputProps={{ maxLength: 4 }}
-                    value={plateNumberPart1}
-                    onChange={(e) => {
-                      setPlateNumberPart1(e.target.value);
-                    }}
-                    required
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    type="text"
-                    name="platePart2"
-                    label="Biển số (phần 2)"
-                    inputProps={{ maxLength: 5 }}
-                    value={plateNumberPart2}
-                    onChange={(e) => {
-                      setPlateNumberPart2(e.target.value);
-                    }}
-                    required
-                    fullWidth
-                  />
-                </Grid>
-                {isLoadingProvinceList && <Spinner />}
-                {errorProvinceList && <div>{errorProvinceList}</div>}
-
-                {!isLoadingProvinceList && !errorProvinceList && (
+              {!isLoadingProvinceList && !errorProvinceList && (
                 <Grid item xs={12} md={6}>
                   <Autocomplete
                     disablePortal
@@ -129,33 +130,25 @@ function AddAuction() {
                     }}
                     getOptionLabel={(option) => option}
                     renderInput={(params) => <TextField {...params} label="Tỉnh/thành" />}
-                    sx={{ marginBottom: '1.5rem' }}
-                  />
-                </Grid>
-                )}
-                <Grid item xs={12} md={6}>
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={vehicleTypes}
-                    value={selectedVehicleType}
-                    onChange={(event, newValue) => {
-                      setSelectedVehicleType(newValue);
-                    }}
-                    getOptionLabel={(option) => option}
-                    renderInput={(params) => <TextField {...params} label="Loại xe" />}
-                  />
-                </Grid>
 
-                <Grid item xs={12} md={12}>
-                  <DateTimePicker
-                    label="Thời gian bắt đầu đấu giá"
-                    value={date}
-                    onChange={(newDate) => setDate(newDate)}
                   />
                 </Grid>
+              )}
+              <Grid item xs={12} md={6}>
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={vehicleTypes}
+                  value={selectedVehicleType}
+                  onChange={(event, newValue) => {
+                    setSelectedVehicleType(newValue);
+                  }}
+                  getOptionLabel={(option) => option}
+                  renderInput={(params) => <TextField {...params} label="Loại xe" />}
+                />
+              </Grid>
 
-                {!isLoadingAuctioneerList && !errorAuctioneerList && (
+              {!isLoadingAuctioneerList && !errorAuctioneerList && (
                 <Grid item xs={12} md={12}>
                   <Autocomplete
                     disablePortal
@@ -167,28 +160,32 @@ function AddAuction() {
                     }}
                     getOptionLabel={(option) => option}
                     renderInput={(params) => <TextField {...params} label="Đấu giá viên" />}
+                    sx={{ marginBottom: '1.5rem' }}
                   />
                 </Grid>
-                )}
-              </Grid>
+              )}
+            </Grid>
 
-              {isLoading && <Spinner />}
-              {error && <div>{error}</div>}
-              <Button type="submit" variant="contained" color="primary">
-                Tạo đấu giá
-              </Button>
-            </form>
-          </Card>
+            <Grid item xs={12} md={12}>
+              <DateTimePicker
+                label="Thời gian bắt đầu đấu giá"
+                value={date}
+                onChange={(newDate) => setDate(newDate)}
+              />
+            </Grid>
 
-        </Grid>
+            {isLoading && <Spinner />}
+            {error && <div>{error}</div>}
+            <Button type="submit" variant="contained" color="primary" size="large" sx={{ marginTop: '3rem' }}>
+              Tạo đấu giá
+            </Button>
+          </form>
+        </Box>
 
-        <Grid item xs={12} md={6}>
-          <Card sx={{ padding: '2rem' }}>
-            <LicensePlateImage plateNumber={`${plateNumberPart1}-${plateNumberPart2}`} />
-          </Card>
-        </Grid>
-      </Grid>
-
+        <Box sx={{ flex: '1' }}>
+          <LicensePlateImage plateNumber={`${plateNumberPart1}-${plateNumberPart2}`} />
+        </Box>
+      </Card>
     </Layout>
   );
 }

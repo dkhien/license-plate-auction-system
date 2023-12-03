@@ -9,17 +9,20 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Link, useNavigate } from 'react-router-dom';
 import vpaLogo from '../../assets/images/vpa-logo.svg';
 
-const pages = ['Trang chủ', 'Danh sách biển số', 'Phòng đấu giá'];
-const routes = ['/', '/auction-list', '/auction-room'];
-// const settings = ['Profile', 'Logout'];
-// const settingRoutes = ['/profile', '/logout'];
-
 function Header() {
+  const userRole = localStorage.getItem('userRole');
+  let pages = ['Trang chủ', 'Danh sách biển số', 'Phòng đấu giá'];
+  let routes = ['/', '/auction-list', '/auction-room'];
+
+  if (userRole === 'ADMIN') {
+    pages = ['Trang chủ', 'Danh sách biển số', 'Tạo đấu giá'];
+    routes = ['/', '/admin/auction-list', '/admin/add-auction'];
+  }
+
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -139,16 +142,17 @@ function Header() {
             ))}
           </Box>
 
+          <Typography sx={{ display: { xs: 'none', md: 'block' }, mr: 2 }}>
+            {localStorage.getItem('userName')}
+          </Typography>
           {/* Avatar */}
           <Box sx={{ flexGrow: 0 }}>
             {userLoggedIn ? (
               <>
                 {/* Avatar Button */}
-                <Tooltip title={localStorage.getItem('userName')}>
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt="User Avatar" />
-                  </IconButton>
-                </Tooltip>
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="User Avatar" />
+                </IconButton>
 
                 {/* Avatar Menu */}
                 <Menu
@@ -167,6 +171,8 @@ function Header() {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
+                  {userRole === 'CUSTOMER'
+                  && (
                   <MenuItem
                     key={0}
                     onClick={handleCloseUserMenu}
@@ -175,6 +181,8 @@ function Header() {
                   >
                     <Typography textAlign="center">Hồ sơ</Typography>
                   </MenuItem>
+                  )}
+
                   <MenuItem
                     key={1}
                     onClick={handleLogout}

@@ -38,7 +38,7 @@ function Login() {
 
         if (userRole === 'ADMIN') {
           localStorage.setItem('adminId', data.adminId);
-          navigate('/admin');
+          navigate('/admin/add-auction');
         } else if (userRole === 'CUSTOMER') {
           localStorage.setItem('customerId', data.customerId);
           navigate('/');

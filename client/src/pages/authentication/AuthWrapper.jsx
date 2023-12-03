@@ -1,18 +1,17 @@
 import React from 'react';
-import {
-  Outlet, useNavigate,
-} from 'react-router-dom';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
 
-function AuthWrapper() {
-  const navigate = useNavigate(); // navigation object
-
+function AuthWrapper({ allowedRoles }) {
+  const location = useLocation();
+  const userRole = localStorage.getItem('userRole');
   const userLogged = JSON.parse(localStorage.getItem('userId'));
 
-  return userLogged
-    ? <Outlet />
-    : (
-      navigate('/login')
-    );
+  if (allowedRoles.includes(userRole)) {
+    return <Outlet />;
+  } if (userLogged) {
+    return <Navigate to="/" state={{ from: location }} replace />;
+  }
+  return <Navigate to="/login" state={{ from: location }} replace />;
 }
 
 export default AuthWrapper;
