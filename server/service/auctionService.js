@@ -170,15 +170,21 @@ export async function updateWinner(data)   {
   customerId = parseInt(customerId)
   price = parseInt(price)
   auctionId = parseInt(auctionId)
-  const auction = await prisma.auction.update({
-    where: {id: auctionId},
-    data: { plate: {
-        update: {
-          data: {price: price, ownerId: customerId}
-        }
-      }}
-  })
-  return auction
+  try {
+    const auction = await prisma.auction.update({
+      where: {id: auctionId},
+      data: { plate: {
+          update: {
+            data: {price: price, ownerId: customerId}
+          }
+        }}
+    })
+    return auction
+  }
+  catch (e) {
+    throw e;
+  }
+
 }
 
 export async function getCurrentPrice(id) {
