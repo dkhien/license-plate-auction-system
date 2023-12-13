@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Typography } from '@mui/material';
 
-function CountdownTimer({ startTime, duration }) {
-  const [timeRemaining, setTimeRemaining] = useState(duration);
+function CountdownTimer({ startTime, duration, handleEnded = () => {} }) {
+  const [timeRemaining, setTimeRemaining] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -13,13 +13,14 @@ function CountdownTimer({ startTime, duration }) {
       if (remainingTime <= 0) {
         clearInterval(interval);
         setTimeRemaining(0);
+        handleEnded(); // Call handleEnded when timeRemaining turns to 0
       } else {
         setTimeRemaining(remainingTime);
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [startTime, duration]);
+  }, [startTime, duration, handleEnded]);
 
   const formatTime = (time) => {
     const days = Math.floor(time / (1000 * 60 * 60 * 24));

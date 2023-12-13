@@ -78,7 +78,10 @@ export async function verifyCode(code, id) {
         }
       }}
     })
+    // console.log(new Date(auction.auction.date) + process.env.AUCTION_DURATION * 60 * 1000)
     if (!auction) return {};
+    // if (new Date(auction.auction.date) + process.env.AUCTION_DURATION * 60 * 1000 <= new Date()) return {};
+  
     return auction.auction;
   } catch (e) {
     console.log(e)
@@ -135,6 +138,7 @@ export async function getAuctionById(id) {
         date: true
       }
     })
+
     return auction;
   } catch (e) {
     console.log(e);
@@ -163,15 +167,24 @@ export async function updateAuctionBid(data) {
 
 export async function updateWinner(data)   {
   let {customerId, price, auctionId} = data;
-  const auction = await prisma.auction.update({
-    where: {id: auctionId},
-    data: { plate: {
-        update: {
-          data: {price: price, ownerId: customerId}
-        }
-      }}
-  })
-  return auction
+  customerId = parseInt(customerId)
+  price = parseInt(price)
+  auctionId = parseInt(auctionId)
+  try {
+    const auction = await prisma.auction.update({
+      where: {id: auctionId},
+      data: { plate: {
+          update: {
+            data: {price: price, ownerId: customerId}
+          }
+        }}
+    })
+    return auction
+  }
+  catch (e) {
+    throw e;
+  }
+
 }
 
 export async function getCurrentPrice(id) {
@@ -180,5 +193,6 @@ export async function getCurrentPrice(id) {
     select: {price: true},
     orderBy: {price: 'desc'}
   })
-  return !data.price ? 40000 : data.price;
+  if (!data || !data.price) return 40000;
+  else return data.price;
 }

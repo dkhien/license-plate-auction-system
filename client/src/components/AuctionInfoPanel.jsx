@@ -5,7 +5,7 @@ import {
 import LicensePlateImage from './LicensePlateImage';
 import CountdownTimer from './CountdownTimer';
 
-function AuctionInfoPanel({ auction }) {
+function AuctionInfoPanel({ auction, handleAuctionEnded }) {
   return (
     <Card sx={{
       padding: '1rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center',
@@ -24,7 +24,12 @@ function AuctionInfoPanel({ auction }) {
           Thời gian còn lại
           {' '}
         </Typography>
-        <CountdownTimer startTime={auction.date} duration={90} sx={{ marginBottom: '1rem' }} />
+        <CountdownTimer
+          startTime={auction.date}
+          duration={process.env.REACT_APP_AUCTION_DURATION * 60 * 1000}
+          sx={{ marginBottom: '1rem' }}
+          handleEnded={handleAuctionEnded}
+        />
         <Box sx={{
           marginTop: '1rem', display: 'flex', alignItems: 'center',
         }}

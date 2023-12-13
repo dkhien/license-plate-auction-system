@@ -10,6 +10,8 @@ import AuctionList from './pages/customer/AuctionList';
 import AuctionRoom, { AuctionCodeInput } from './pages/customer/AuctionRoom';
 import Test from './pages/test/Test';
 import Signup from './pages/authentication/Signup';
+import AuthWrapper from './pages/authentication/AuthWrapper';
+import AdminAuctionList from './pages/admin/AdminAuctionList';
 
 function App() {
   const routes = [
@@ -17,67 +19,72 @@ function App() {
     {
       path: '/login',
       element: <Login />,
-      isPrivate: false,
+      allowedRoles: [],
     },
     {
       path: '/logout',
       element: <Logout />,
-      isPrivate: true,
+      allowedRoles: [],
     },
     {
       path: '/signup',
       element: <Signup />,
-      isPrivate: true,
+      allowedRoles: [],
     },
 
     // COMMON ROUTES
     {
       path: '/profile',
       element: <Profile />,
-      isPrivate: true,
+      allowedRoles: ['ADMIN', 'CUSTOMER'],
     },
 
     // CUSTOMER ROUTES
     {
       path: '/',
       element: <Home />,
-      isPrivate: true,
+      allowedRoles: [],
     },
     {
       path: '/auction-list',
       element: <AuctionList />,
-      isPrivate: true,
+      allowedRoles: ['CUSTOMER'],
     },
     {
       path: '/auction-room',
       element: <AuctionCodeInput />,
-      isPrivate: true,
+      allowedRoles: ['CUSTOMER'],
     },
     {
       path: '/auction-room/:id',
       element: <AuctionRoom />,
-      isPrivate: true,
+      allowedRoles: ['CUSTOMER'],
     },
 
     // ADMIN ROUTES
     {
-      path: '/admin',
+      path: '/admin/add-auction',
       element: <AddAuction />,
-      isPrivate: true,
+      allowedRoles: ['ADMIN'],
+    },
+    {
+      path: '/admin/auction-list',
+      element: <AdminAuctionList />,
+      allowedRoles: ['ADMIN'],
     },
 
     // TEST ROUTE
     {
       path: '/test',
       element: <Test />,
-      isPrivate: false,
+      allowedRoles: [],
     },
 
     // ERROR ROUTE
     {
       path: '*',
       element: <NotFound />,
-      isPrivate: false,
+      allowedRoles: [],
     },
 
   ];
@@ -86,13 +93,29 @@ function App() {
     <BrowserRouter>
 
       <Routes>
-        {routes.map((route) => (
-          <Route
-            key={route.path}
-            path={route.path}
-            element={route.element}
-          />
-        ))}
+        {routes.map((route) => {
+          if (route.allowedRoles.length > 0) {
+            return (
+              <Route
+                key={route.path}
+                element={<AuthWrapper allowedRoles={route.allowedRoles} />}
+              >
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={route.element}
+                />
+              </Route>
+            );
+          }
+          return (
+            <Route
+              key={route.path}
+              path={route.path}
+              element={route.element}
+            />
+          );
+        })}
       </Routes>
 
     </BrowserRouter>

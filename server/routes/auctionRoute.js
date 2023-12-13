@@ -14,6 +14,7 @@ const auctionRouter = express.Router();
 auctionRouter.post('/new', async (req, res) => {
   try {
     const data = req.body;
+    console.log(data)
     const auction = await createAuction(data)
     res.json(auction)
   } catch (e) {

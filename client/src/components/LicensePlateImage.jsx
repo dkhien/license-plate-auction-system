@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 
 function LicensePlateImage({ plateNumber }) {
-  const [plateNumberFirstPart, plateNumberSecondPart] = plateNumber.split(' ');
+  const [plateNumberFirstPart, plateNumberSecondPart] = plateNumber.split('-');
   return (
     <Box
       backgroundColor="white"

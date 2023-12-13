@@ -11,6 +11,7 @@ import PageTitle from '../../components/layout/PageTitle';
 import Footer from '../../components/layout/Footer';
 
 function Home() {
+  const userRole = localStorage.getItem('userRole');
   return (
     <>
       <Header />
@@ -42,9 +43,12 @@ function Home() {
         >
           <Typography variant="h2" sx={{ fontWeight: 'bold', marginBottom: '1rem' }}>Đấu giá biển số</Typography>
           <Typography variant="h6" sx={{ fontWeight: '100', marginBottom: '2rem' }}>Chào mừng bạn đến với trang đấu giá biển số trực tuyến!</Typography>
-          <Link to="/auction-list">
-            <GradientButton>Đấu giá ngay</GradientButton>
-          </Link>
+          {userRole === 'CUSTOMER'
+            && (
+            <Link to="/auction-list">
+              <GradientButton>Đấu giá ngay</GradientButton>
+            </Link>
+            )}
         </Box>
       </Box>
       <Divider sx={{ marginTop: '2rem', marginBottom: '2rem' }} />

@@ -1,4 +1,4 @@
-import {getCurrentPrice, updateAuctionBid} from "../service/auctionService.js";
+import {getAuctionById, getCurrentPrice, updateAuctionBid} from "../service/auctionService.js";
 
 export const connect = (socket) => {
   console.log(`a user connected from ${socket.handshake.address}`);
@@ -29,7 +29,11 @@ export const createRoom = (io, socket) => {
       let {room} = payload
       room = parseInt(room)
       const price = await getCurrentPrice(room)
-      io.emit('auction:join',price)
+      const auction = await getAuctionById(room)
+      io.emit('auction:join',{
+        price: price,
+        auction: auction
+      })
       socket.join(room)
       console.log(`a user joined room ${room} from ${socket.handshake.address} with current price ${price}`)
     } catch (e) {

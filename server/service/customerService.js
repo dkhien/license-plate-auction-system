@@ -1,6 +1,6 @@
 import prisma from "./prisma.js";
 
-export const getProfileWithPlate = async (id) => {
+export const getCustomerProfile = async (id) => {
   const profile = await prisma.customer.findFirst({
     where: {
       id: id
@@ -16,4 +16,23 @@ export const getProfileWithPlate = async (id) => {
     item.auction.win = item.auction.plate.ownerId === id;
   }
   return profile;
+}
+
+export const getCustomerRegisteredAuctions = async (customerId) => {
+  const auctions = await prisma.code.findMany({
+    where: {
+      customerId: customerId
+    },
+    select: {
+      auction: {
+        select: {
+          id: true,
+          plate: true,
+          date: true
+        }
+      }
+    }
+  });
+  
+  return auctions;
 }

@@ -1,15 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Avatar, Box, Button, List, ListItemAvatar, ListItemButton,
-  ListItemText, Typography, Card, ListItem, Pagination, useTheme,
+  Avatar, Box, List, ListItemAvatar, ListItemButton,
+  ListItemText, Typography, Card, Grid, CardContent,
 } from '@mui/material';
 import EmojiPeopleOutlinedIcon from '@mui/icons-material/EmojiPeopleOutlined'; // Changed icon
 import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
-// import Footer from '../../components/layout/Footer';
-// import Header from '../../components/layout/Header';
-// import Layout from '../../components/layout/Layout';
+import Spinner from '../../components/Spinner';
+import Layout from '../../components/layout/Layout';
+import HoverableCard from '../../components/mui-custom/HoverableCard';
+import LicensePlateImage from '../../components/LicensePlateImage';
 
 function Profile() {
+  const serverUrl = process.env.REACT_APP_SERVER_URL;
+  const userProfileEndpoint = `${serverUrl}/api/customer/profile`;
+  const userId = localStorage.getItem('customerId');
+
+  const [userInfo, setUserInfo] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      setLoading(true);
+      try {
+        const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(
+            {
+              id: userId,
+            },
+          ),
+        };
+        const res = await fetch(userProfileEndpoint, requestOptions);
+        if (res) {
+          const data = await res.json();
+          console.log(data);
+          setUserInfo(data);
+        }
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getUserInfo();
+  }, []);
+
   const [selectedTab, setSelectedTab] = useState('userInfo');
 
   const handleTabChange = (event, newValue) => {
@@ -17,20 +54,31 @@ function Profile() {
   };
 
   return (
-    <div style={{ display: 'flex', overflow: 'hidden' }}>
-      <Sidebar selectedTab={selectedTab} handleTabChange={handleTabChange} />
-      <MainContent selectedTab={selectedTab} />
-    </div>
+    <Layout>
+      {loading && <Spinner />}
+      {error && <Typography>{error}</Typography>}
+      {userInfo && (
+
+      <div style={{ display: 'flex', overflow: 'hidden' }}>
+        <Sidebar
+          selectedTab={selectedTab}
+          handleTabChange={handleTabChange}
+          userInfo={userInfo.account}
+        />
+        <MainContent selectedTab={selectedTab} userInfo={userInfo} />
+      </div>
+      )}
+    </Layout>
   );
 }
 
-function Sidebar({ selectedTab, handleTabChange }) {
+function Sidebar({ selectedTab, handleTabChange, userInfo }) {
   return (
     <div style={{ padding: '16px', minWidth: 250 }}>
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Avatar alt="User Avatar" style={{ width: '80px', height: '80px', marginBottom: '16px' }} />
         <Typography variant="h5" sx={{ marginBottom: '16px' }}>
-          username
+          {userInfo.name}
         </Typography>
       </Box>
 
@@ -50,130 +98,112 @@ function Sidebar({ selectedTab, handleTabChange }) {
           <ListItemText primary="Lịch sử đấu giá" />
         </ListItemButton>
       </List>
-      <Button variant="contained" color="primary" fullWidth sx={{ marginTop: '16px' }}>
+      {/* <Button variant="contained" color="primary" fullWidth sx={{ marginTop: '16px' }}>
         Cập nhật hồ sơ
-      </Button>
+      </Button> */}
     </div>
   );
 }
 
-function MainContent({ selectedTab }) {
+function MainContent({ selectedTab, userInfo }) {
+  const userProfile = userInfo.account;
+  const biddingHistory = userInfo.code;
   return (
+    // const biddingHistory = userInfo.biddingHistory;
     <Box sx={{ flexGrow: 1, padding: '24px' }}>
       {selectedTab === 'userInfo' && (
-        <UserInfo />
+        <UserInfo userProfile={userProfile} />
       )}
       {selectedTab === 'biddingHistory' && (
-        <BiddingHistory />
+        <BiddingHistory biddingHistory={biddingHistory} />
       )}
     </Box>
   );
 }
 
-function UserInfo() {
-  // mock user data (username, name, email, phone number, address, date of birth, citizen ID)
+function UserInfo({ userProfile }) {
   const userInfo = {
-    username: 'username',
-    name: 'name',
-    email: 'email',
-    phoneNumber: 'phoneNumber',
-    address: 'address',
-    dateOfBirth: 'dateOfBirth',
-    citizenID: 'citizenID',
+    name: userProfile.name,
+    email: userProfile.email,
+    phoneNumber: userProfile.phone,
+    citizenID: userProfile.citizenId,
   };
 
   return (
-    <Card>
+    <Card sx={{ padding: '2rem' }}>
       <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: '1rem' }}>
         Hồ sơ người dùng
       </Typography>
-      <Typography variant="h6">
-        {userInfo.username}
-      </Typography>
-      <Typography variant="body1">
-        Tên:
-        {' '}
-        {userInfo.name}
-      </Typography>
-      <Typography variant="body1">
-        Email:
-        {' '}
-        {userInfo.email}
-      </Typography>
-      <Typography variant="body1">
-        Phone Number:
-        {' '}
-        {userInfo.phoneNumber}
-      </Typography>
-      <Typography variant="body1">
-        Date of Birth:
-        {' '}
-        {userInfo.dateOfBirth}
-      </Typography>
-      <Typography variant="body1">
-        Citizen ID:
-        {' '}
-        {userInfo.citizenID}
-      </Typography>
+      <Box sx={{ marginBottom: '1rem' }}>
+        <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+          Tên
+        </Typography>
+        <Typography variant="body1">
+          {userInfo.name}
+        </Typography>
+      </Box>
+      <Box sx={{ marginBottom: '1rem' }}>
+        <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+          Email
+        </Typography>
+        <Typography variant="body1">
+          {userInfo.email}
+        </Typography>
+      </Box>
+      <Box sx={{ marginBottom: '1rem' }}>
+        <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+          Số điện thoại
+        </Typography>
+        <Typography variant="body1">
+          {userInfo.phoneNumber}
+        </Typography>
+      </Box>
+      <Box>
+        <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+          CCCD/CMND
+        </Typography>
+        <Typography variant="body1">
+          {userInfo.citizenID}
+        </Typography>
+      </Box>
     </Card>
   );
 }
 
-function BiddingHistory() {
-  const theme = useTheme();
-  const bids = [
-    {
-      id: 1, price: 100, time: '2022-01-01 10:00:00', bidder: 'John',
-    },
-    {
-      id: 2, price: 150, time: '2022-01-01 10:05:00', bidder: 'Alice',
-    },
-    {
-      id: 3, price: 200, time: '2022-01-01 10:10:00', bidder: 'Bob',
-    },
-  ];
-
-  // Pagination
-  const [page, setPage] = React.useState(1);
-  const handleChangePage = (_, value) => {
-    setPage(value);
-  };
-  const paginationCount = 3;
+function BiddingHistory({ biddingHistory }) {
   return (
-    <Card sx={{ padding: '2rem', textAlign: 'center', height: '100%' }}>
+    <Card sx={{ padding: '2rem' }}>
       <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: '1rem' }}>
         Lịch sử đấu giá
       </Typography>
-      <List>
-        {bids.slice((page - 1) * paginationCount, page * paginationCount).map((item, index) => (
-          <ListItem
-            key={item.id}
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              borderRadius: theme.shape.borderRadius,
-              backgroundColor: index % 2 === 0 ? theme.palette.background.default
-                : 'transparent',
-              margin: theme.spacing(1),
-              paddingLeft: '2rem',
-              paddingRight: '2rem',
-            }}
-          >
-            <ListItemText
-              primary={item.price}
-              secondary={`${item.time}`}
-            />
-            <ListItemText primary={item.bidder} sx={{ textAlign: 'right' }} />
-          </ListItem>
+      <Grid container spacing={2}>
+        {biddingHistory?.map((item) => (
+          <Grid item xs={12} md={3} key={item.auction.plate.id}>
+            <HoverableCard
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                textAlign: 'center',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100%',
+              }}
+            >
+              <LicensePlateImage plateNumber={item.auction.plate.plateNumber} />
+              <CardContent>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <Typography variant="body1">{item.auction.plate.city.replace(/(Tỉnh|Thành phố)\s+/i, '')}</Typography>
+                  <Typography variant="body1" sx={{ marginLeft: '1rem' }}>{item.auction.plate.typeOfVehicle}</Typography>
+                </Box>
+                <Typography variant="body1" sx={{ marginTop: '0.5rem' }}>{new Date(item.auction.date).toLocaleString()}</Typography>
+                <Typography variant="h6" sx={{ marginTop: '0.5rem', color: item.auction.win ? '#56AE57' : '#c23b22' }}>
+                  {item.auction.win ? 'THẮNG' : 'THUA'}
+                </Typography>
+              </CardContent>
+            </HoverableCard>
+          </Grid>
         ))}
-      </List>
-      <Pagination
-        count={Math.ceil(bids.length / paginationCount)}
-        page={page}
-        onChange={handleChangePage}
-      />
+      </Grid>
     </Card>
   );
 }

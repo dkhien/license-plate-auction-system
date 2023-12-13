@@ -1,4 +1,4 @@
-import { React, useState } from 'react';
+import { React, useState, useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Button, TextField, Typography, Grid, Card, Box,
@@ -10,9 +10,16 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  useEffect(() => {
+    const userEmail = localStorage.getItem('userEmail');
+    if (userEmail) {
+      navigate('/');
+    }
+  }, []);
+
   const handleLogin = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/login`, {
+      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -22,18 +29,18 @@ function Login() {
 
       // TODO
       if (response) {
-        const userInfo = await response.json();
+        const data = await response.json();
+        localStorage.setItem('userId', data.id);
+        localStorage.setItem('userEmail', data.email);
+        localStorage.setItem('userName', data.name);
+        const userRole = data.role;
+        localStorage.setItem('userRole', userRole);
 
-        // Save to local storage
-        localStorage.setItem('userEmail', email);
-        localStorage.setItem('userName', userInfo.name);
-        localStorage.setItem('userId', userInfo.id);
-        localStorage.setItem('userRole', userInfo.role);
-
-        // Redirect to homepage
-        if (userInfo.role === 'ADMIN') {
-          navigate('/admin');
-        } else if (userInfo.role === 'CUSTOMER') {
+        if (userRole === 'ADMIN') {
+          localStorage.setItem('adminId', data.adminId);
+          navigate('/admin/add-auction');
+        } else if (userRole === 'CUSTOMER') {
+          localStorage.setItem('customerId', data.customerId);
           navigate('/');
         }
       } else {

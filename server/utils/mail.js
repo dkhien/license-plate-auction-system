@@ -33,10 +33,21 @@ export const sendTestMail = (customerEmail, content) => {
 
 export const sendCodeRoomMail = (customerEmail, licensePlate, code) => {
   const emailDetails = {
-    from: process.env.EMAIL,
+    from: `Đấu Giá Biển Số <${process.env.EMAIL}>`,
     to: customerEmail,
-    subject: `Auction room join code for license plate: ${licensePlate}`,
-    text: `Please keep this for yourself. The code is ${code} for license plate.`
+    subject: `Mã phòng đấu giá biển số xe ${licensePlate}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #fff; padding: 20px;">
+      <h2 style="text-align: center; color: #333;">HỆ THỐNG ĐẤU GIÁ BIỂN SỐ</h2>
+      <p>Kính gửi quý khách,</p>
+      <p>Mã truy cập phòng đấu giá của quý khách là:</p>
+      <p style="text-align: center; font-size: 20px; color: #ff0000;"><strong>${code}</strong></p>
+      <p>Quý khách vui lòng không đưa mã này cho bất kỳ ai.</p>
+      <p>Chân thành cảm ơn quý khách!</p>
+      </div>
+      </div>
+    `
   }
   sendEmail(emailDetails);
 }

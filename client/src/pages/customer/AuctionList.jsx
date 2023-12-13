@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Autocomplete, Grid, TextField, Box, IconButton, Menu, MenuItem, Modal, Typography, Button,
+  Autocomplete, Grid, TextField, Box, IconButton, Menu, MenuItem, Modal, Typography, Checkbox,
+  Button, FormControlLabel,
 } from '@mui/material';
 import SortIcon from '@mui/icons-material/Sort';
 import Layout from '../../components/layout/Layout';
@@ -9,6 +10,7 @@ import LicensePlateCard from '../../components/LicensePlateCard';
 import useFetch from '../../hooks/useFetch';
 import Spinner from '../../components/Spinner';
 import vehicleTypes from '../../utils/vehicleTypeList';
+import StyledModalBox from '../../components/mui-custom/StyledModal';
 
 function AuctionList() {
   // const serverUrl = process.env.REACT_APP_SERVER_URL;
@@ -24,16 +26,32 @@ function AuctionList() {
   const [open, setOpen] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const handleClose = () => setOpen(false);
+  const [selectedPlate, setSelectedPlate] = useState(null);
+  const [registeredPlates, setRegisteredPlates] = useState(null);
 
-  useEffect(() => {
-    if (provinceList) {
-      const options = provinceList.map((province) => province.name);
-      console.log(options);
-      setProvinceOptions(options);
-    }
-  }, [provinceList]);
+  const userId = localStorage.getItem('customerId');
+  const [registeredPlatesLoading, setregisteredPlatesLoading] = useState(false);
+  const [registeredPlatesError, setRegisteredPlatesError] = useState(null);
+
+  const [showRegistered, setShowRegistered] = useState(false);
+  const [showUnregistered, setShowUnregistered] = useState(false);
+  const [showStarted, setShowStarted] = useState(false);
+  const [showNotStarted, setShowNotStarted] = useState(false);
 
   const filteredAuctionList = auctionList?.filter((auction) => {
+    if (showRegistered && !registeredPlates.includes(auction.id)) {
+      return false;
+    }
+    if (showUnregistered && registeredPlates.includes(auction.id)) {
+      return false;
+    }
+    if (showStarted && new Date(auction.auction.date) > Date.now()) {
+      return false;
+    }
+    if (showNotStarted && new Date(auction.auction.date) < Date.now()) {
+      return false;
+    }
+
     if (selectedProvince && selectedVehicleType) {
       return auction.city === selectedProvince && auction.typeOfVehicle === selectedVehicleType;
     } if (selectedProvince) {
@@ -43,7 +61,7 @@ function AuctionList() {
     }
     return true;
   }).sort((a, b) => {
-    // Sort by waiting time
+  // Sort by waiting time
     const dateA = new Date(a.auction.date);
     const dateB = new Date(b.auction.date);
     if (sortAscending) {
@@ -51,6 +69,70 @@ function AuctionList() {
     }
     return dateB - dateA;
   });
+
+  const handleRegisteredChange = (event) => {
+    setShowRegistered(event.target.checked);
+  };
+
+  const handleUnregisteredChange = (event) => {
+    setShowUnregistered(event.target.checked);
+  };
+
+  const handleStartedChange = (event) => {
+    setShowStarted(event.target.checked);
+  };
+
+  const handleNotStartedChange = (event) => {
+    setShowNotStarted(event.target.checked);
+  };
+
+  const registeredPlatesEndpoint = `${serverUrl}/api/customer/plates`;
+  useEffect(() => {
+    const getUserInfo = async () => {
+      setregisteredPlatesLoading(true);
+      try {
+        const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: userId,
+          }),
+        };
+        const res = await fetch(registeredPlatesEndpoint, requestOptions);
+        if (res) {
+          const data = await res.json();
+          console.log(data);
+          const registeredPlatesList = data.map((item) => item.auction.plate.id);
+          setRegisteredPlates(registeredPlatesList);
+        }
+      } catch (err) {
+        setRegisteredPlatesError(err);
+      } finally {
+        setregisteredPlatesLoading(false);
+      }
+    };
+    getUserInfo();
+  }, []);
+
+  const handleRegister = (plate) => {
+    // Check if the plate is already registered
+    if (registeredPlates.includes(plate.id)) {
+      return;
+    }
+
+    // pop up modal to confirm registration
+    setOpen(true);
+    setConfirmed(false);
+    setSelectedPlate(plate);
+  };
+
+  useEffect(() => {
+    if (provinceList) {
+      const options = provinceList.map((province) => province.name);
+      console.log(options);
+      setProvinceOptions(options);
+    }
+  }, [provinceList]);
 
   const handleSortMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -65,13 +147,44 @@ function AuctionList() {
     handleSortMenuClose();
   };
 
-  const handleRegister = (plate) => {
-    // pop up modal to confirm registration
-    console.log(plate);
-    setOpen(true);
-  };
+  const [isRegisterLoading, setRegisterLoading] = useState(false);
+  const [errorRegister, setErrorRegister] = useState(null);
+
+  const auctionRegisterEndpoint = `${serverUrl}/api/plate/register`;
 
   const handleConfirm = () => {
+    const registerForAuction = async () => {
+      setRegisterLoading(true);
+      try {
+        const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(
+            {
+              email: localStorage.getItem('userEmail'),
+              plateId: selectedPlate.id,
+              id: userId,
+            },
+          ),
+        };
+        const res = await fetch(auctionRegisterEndpoint, requestOptions);
+        if (!res.ok) {
+          throw new Error('Error registering for auction', res.status);
+        }
+      } catch (err) {
+        setErrorRegister(err);
+      } finally {
+        setRegisterLoading(false);
+      }
+    };
+
+    registerForAuction();
+
+    // Update the registered plates
+    setRegisteredPlates([...registeredPlates, selectedPlate.id]);
+
+    // Close the modal
+    setOpen(false);
     setConfirmed(true);
   };
 
@@ -79,8 +192,8 @@ function AuctionList() {
     <Layout>
       <PageTitle>Danh sách biển số đấu giá</PageTitle>
 
-      {isLoading && <Spinner />}
-      {error && <div>{error}</div>}
+      {(isLoading || registeredPlatesLoading) && <Spinner />}
+      {(error || registeredPlatesError) && <div>{error}</div>}
 
       {!isLoading && !error && (
         <>
@@ -115,7 +228,7 @@ function AuctionList() {
                   setSelectedVehicleType(newValue);
                 }}
                 getOptionLabel={(option) => option}
-                sx={{ width: 300 }}
+                sx={{ width: 300, marginRight: '2rem' }}
                 renderInput={(params) => <TextField {...params} label="Loại xe" />}
               />
 
@@ -124,6 +237,7 @@ function AuctionList() {
                 aria-haspopup="true"
                 onClick={handleSortMenuOpen}
                 color="inherit"
+                sx={{ marginRight: '2rem' }}
               >
                 <SortIcon />
               </IconButton>
@@ -134,9 +248,31 @@ function AuctionList() {
                 open={Boolean(anchorEl)}
                 onClose={handleSortMenuClose}
               >
-                <MenuItem onClick={() => handleSortOptionSelect('asc')}>Sort Ascending</MenuItem>
-                <MenuItem onClick={() => handleSortOptionSelect('desc')}>Sort Descending</MenuItem>
+                <MenuItem onClick={() => handleSortOptionSelect('asc')}>Sớm nhất</MenuItem>
+                <MenuItem onClick={() => handleSortOptionSelect('desc')}>Muộn nhất</MenuItem>
               </Menu>
+
+              <FormControlLabel
+                control={<Checkbox checked={showRegistered} onChange={handleRegisteredChange} />}
+                label="Đã đăng ký"
+              />
+              <FormControlLabel
+                control={(
+                  <Checkbox
+                    checked={showUnregistered}
+                    onChange={handleUnregisteredChange}
+                  />
+)}
+                label="Chưa đăng ký"
+              />
+              <FormControlLabel
+                control={<Checkbox checked={showStarted} onChange={handleStartedChange} />}
+                label="Đã bắt đầu"
+              />
+              <FormControlLabel
+                control={<Checkbox checked={showNotStarted} onChange={handleNotStartedChange} />}
+                label="Chưa bắt đầu"
+              />
 
             </Box>
 
@@ -145,7 +281,13 @@ function AuctionList() {
           <Grid container spacing={2}>
             {filteredAuctionList?.map((auction) => (
               <Grid item xs={12} md={2} key={auction.id}>
-                <LicensePlateCard plate={auction} handleRegister={handleRegister} />
+                <LicensePlateCard
+                  plate={auction}
+                  handleRegister={handleRegister}
+                  isRegistered={
+                    (registeredPlates != null) ? registeredPlates.includes(auction.id) : false
+}
+                />
               </Grid>
             ))}
           </Grid>
@@ -157,17 +299,7 @@ function AuctionList() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 400,
-          bgcolor: 'background.paper',
-          boxShadow: 24,
-          p: 4,
-        }}
-        >
+        <StyledModalBox>
           {
             !confirmed && (
               <>
@@ -194,7 +326,15 @@ function AuctionList() {
             </Button>
           </>
           )}
-        </Box>
+          {isRegisterLoading && <Spinner />}
+          {errorRegister && (
+          <div>
+            {errorRegister}
+            <br />
+            Vui lòng thử lại.
+          </div>
+          )}
+        </StyledModalBox>
       </Modal>
     </Layout>
   );
